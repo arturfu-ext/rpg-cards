@@ -1,20 +1,15 @@
-name: Build and Deploy
+name: CI
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+      - react-migration
+  pull_request:
 
 jobs:
-  build-and-deploy:
+  checks:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,9 +26,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Icon SVGs are a build artifact downloaded from game-icons.net; the
-      # icon manifest and generated CSS are then refreshed so the deployed
-      # app always matches the downloaded set.
+      - name: Lint (Biome)
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests (incl. golden-master parity)
+        run: pnpm test
+
+      # The icon SVG set is a build artifact downloaded from game-icons.net
+      # (gitignored). Cache it across runs; refresh whenever the cache is
+      # evicted or the updater script changes.
       - name: Restore icon assets
         id: icon-cache
         uses: actions/cache@v4
@@ -49,16 +53,24 @@ jobs:
         if: hashFiles('resources/generated/icons.css') == ''
         run: pnpm build:icons
 
-      - name: Regenerate icon manifest
-        run: pnpm gen:icons
-
       - name: Build
         run: pnpm build
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: End-to-end tests
+        run: pnpm test:e2e
+
+      - name: Print parity / visual tests
+        run: pnpm test:visual
+
+      - name: Upload test artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7

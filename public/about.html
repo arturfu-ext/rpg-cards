@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Rpg-cards : RPG spell/item/monster card generator">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="css/about/stylesheet.css">
+
+    <title>Rpg-cards</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/mephitrpg/rpg-cards">View on GitHub</a>
+
+          <h1 id="project_title">Rpg-cards</h1>
+          <h2 id="project_tagline">RPG spell/item/monster card generator</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/mephitrpg/rpg-cards/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/mephitrpg/rpg-cards/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+            <a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>
+            What it does
+        </h3>
+
+<p>
+    This project generates cards for spells, items, or monsters for RPG games.
+    The generator is web-based and runs in your browser, there is no need to install any software.
+    The cards are packed on an A4 page such that you can print it double sided and
+    get cards with a front and back.
+    Here's an example of what you can create:
+</p>
+
+<div align="center">
+    <img src="img/about/front.png">
+    <img src="img/about/back.png">
+</div>
+
+<p>
+    You can define the content of the cards yourself using simple JSON data.
+    The above example was generated from the data shown below.
+    Don't worry if you don't want to edit the raw data - there is a simple user interface for creating the cards.
+</p>
+
+<pre><code>{
+    "count": 1,
+    "color": "maroon",
+    "title": "Burning Hands",
+    "icon": "book-cover",
+    "contents": [
+        "subtitle | 1st level evocation",
+        "rule",
+        "property | Casting time | 1 action",
+        "property | Range | Self (15ft cone)",
+        "property | Components | V, S",
+        "rule",
+        "fill | 1",
+        "text | Each creature in a 15-foot cone takes <b>3d6 fire</b> damage.",
+        "text | The fire ignites any flammable objects in the area.",
+        "fill | 3",
+        "section | At higher levels",
+        "text | +1d6 damage for each slot above 1st"
+    ]
+}
+</code></pre>
+
+<h3>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Live demo
+</h3>
+
+<p>
+    <a href="https://mephitrpg.github.io/rpg-cards/">Try it out yourself</a>.
+    Press "Load sample" in the menu, then press "Generate" and have a look at the newly opened window/tab that contains all the generated cards.
+</p>
+
+<h2>Documentation</h2>
+
+This is not a complete documentation, but some information that should help you get started.
+
+<h3>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Card JSON data
+</h3>
+
+<p>
+    <ul>
+        <li>
+            <code>count</code>
+            The number of times this card is repeated. Useful for consumable items that you hand out multiple times.
+        </li>
+        <li>
+            <code>color</code>
+            Name of the card color. You can use all <a href="http://www.w3schools.com/cssref/css_colornames.asp">CSS color names</a>.
+        </li>
+        <li>
+            <code>icon</code>
+            Name of the card icon. You can use most icons from <a href="http://game-icons.net/">game-icons.net</a>.
+            For example, the file name of <a href="http://game-icons.net/lorc/originals/plain-dagger.html">this dagger</a>
+            is "plain-dagger.png", so you would use "plain-dagger" as the icon name.
+            Additional custom icon names are defined in <code>css/custom-icons.css</code>.
+        </li>
+        <li>
+            <code>icon_back</code>
+            Optional. Name of the big icon on the card back. If not specified, the icon from the "icon" property is used.
+        </li>
+        <li>
+            <code>background_image</code>
+            Optional. URL of a backgound image for the card back. If specified, replaces the back icon.
+        </li>
+        <li>
+            <code>title</code>
+            The title of the card.
+        </li>
+        <li>
+            <code>contents</code>
+            An array of strings, specifying all card elements, in top to bottom order (see below).
+        </li>
+    </ul>
+</p>
+
+
+<h3>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Card elements
+</h3>
+
+<p>
+    Each card element is a string of the following format:
+    <pre>"element | param1 | param2 | ..."</pre><br />
+
+    HTML code is supported.<br /><br />
+
+    The following elements are available:
+
+    <ul>
+        <li>
+            <code>subtitle</code>
+            Slightly larger italic text.
+            <ul>
+                <li><em>Param1</em> - the subtitle text.</li>
+                <li><em>Param2</em> - right aligned additional content.</li>
+            </ul>
+        </li>
+        <li>
+            <code>rule</code>
+            A horizontal rule.
+            <ul>
+            </ul>
+        </li>
+        <li>
+            <code>property</code>
+            A property line. The property description is indented if it spans more than one line.
+            <ul>
+                <li><em>Param1</em> - the property name (in bold).</li>
+                <li><em>Param2</em> - the property description.</li>
+            </ul>
+        </li>
+        <li>
+            <code>description</code>
+            Same as <i>property</i>, but text is not indented.
+            <ul>
+            </ul>
+        </li>
+        <li>
+            <code>text</code>
+            A simple paragraph of text.
+            <ul>
+                <li><em>Param1</em> - the text.</li>
+            </ul>
+        </li>
+        <li>
+            <code>section</code>
+            A subsection header, with a horizontal rule below the subsection name.
+            <ul>
+                <li><em>Param1</em> - the subsection name.</li>
+                <li><em>Param2</em> - right aligned additional content.</li>
+            </ul>
+        </li>
+        <li>
+            <code>boxes</code>
+            A line full of empty boxes. Useful for items with charges and actions with limited use.
+            <ul>
+                <li><em>Param1</em> - number of boxes.</li>
+                <li><em>Param2</em> - size of a box (in "em" css unit, where 1.0 is the size of the letter 'e').</li>
+                <li><em>Param3</em> - text.</li>
+            </ul>
+        </li>
+        <li>
+            <code>dndstats</code>
+            A Dungeons&Dragons stat block.
+            <ul>
+                <li><em>Param1</em> - Strength score.</li>
+                <li><em>Param2</em> - Dexterity score.</li>
+                <li><em>Param3</em> - Constitution score.</li>
+                <li><em>Param4</em> - Intelligence score.</li>
+                <li><em>Param5</em> - Wisdom score.</li>
+                <li><em>Param6</em> - Charisma score.</li>
+            </ul>
+        </li>
+        <li>
+            <code>swstats</code>
+            A Savage Worlds stat block.
+            <ul>
+                <li><em>Param1</em> - Agility dice.</li>
+                <li><em>Param2</em> - Smarts dice.</li>
+                <li><em>Param3</em> - Spirit dice.</li>
+                <li><em>Param4</em> - Strength dice.</li>
+                <li><em>Param5</em> - Vigor dice.</li>
+                <li><em>Param6</em> - Pace score.</li>
+                <li><em>Param7</em> - Parry score.</li>
+                <li><em>Param8</em> - Toughness score.</li>
+                <li><em>Param9</em> - Loot value.</li>
+            </ul>
+        </li>
+        <li>
+            <code>fill</code>
+            A dynamically resized empty element that takes up a portion of unused space on the card.
+            You can use this to vertically center text by adding one of these before and after the text you want to center.
+            <ul>
+                <li><em>Param1</em> - the number of units of empty space to use.</li>
+            </ul>
+        </li>
+        <li>
+            <code>bullet</code>
+            A bulleted text line.
+            <ul>
+                <li><em>Param1</em> - the text.</li>
+            </ul>
+        </li>
+        <li>
+            <code>picture</code>
+            An inline picture.
+            <ul>
+                <li><em>Param1</em> - URL of the picture.</li>
+                <li><em>Param2</em> - Height in pixels.</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+
+<h3>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Pathfinder 2nd Edition Card Elements
+</h3>
+<h4>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Custom icons
+</h4>
+<p>
+    Custom icons for Actions have been added. You may use them as "Icons" (front of the card) and "Back icon" (back of the card).
+
+    <ul>
+        <li>
+            <code>p2e-1-action</code>
+        </li>
+        <li>
+            <code>p2e-2-actions</code>
+        </li>
+        <li>
+            <code>p2e-3-actions</code>
+        </li>
+        <li>
+            <code>p2e-free-action</code>
+        </li>
+        <li>
+            <code>p2e-reaction</code>
+        </li>   
+    </ul>
+</p>
+<h4>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Attributes, Saving Throws, Armor Class and Hit Points
+</h4>
+<p>
+    It shows this information in a similar way you can find Monsters and Creatures in the books.
+
+    <ul>
+        <li>
+            <code>p2e_stats</code>
+            A Pathfinder 2nd Edition stat block, similar to the ones you find in the books.
+            <ul>
+                <li><em>Param1</em>  - Strength score.</li>
+                <li><em>Param2</em>  - Dexterity score.</li>
+                <li><em>Param3</em>  - Constitution score.</li>
+                <li><em>Param4</em>  - Intelligence score.</li>
+                <li><em>Param5</em>  - Wisdom score.</li>
+                <li><em>Param6</em>  - Charisma score.</li>
+                <li><em>Param7</em>  - Armor Class score.</li>
+                <li><em>Param8</em>  - Fortitude score.</li>
+                <li><em>Param9</em>  - Reflex score.</li>
+                <li><em>Param10</em> - Will score.</li>
+                <li><em>Param11</em> - Hit Points score.</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+<h4>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Activities
+</h4>
+<p>
+    Displayed in a similar way to the "Property" card element, except it accepts one more parameter for the amount of actions you need to perform the activity.
+
+    <ul>
+        <li>
+            <code>p2e_activity</code>
+            A Pathfinder 2nd Edition stat block, similar to the ones you find in the books.
+            <ul>
+                <li><em>Param1</em>  - Action name.</li>
+                <li><em>Param2</em>  - Amount of actions needed (0, 1, 2, 3, R).</li>
+                <li><em>Param3</em>  - Action Description.</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+<h4>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Traits
+</h4>
+<p>
+    You can have "trait" badges in in your cards.
+
+    <ul>
+        <li>
+            <code>p2e_start_trait_section</code> - Start of traits section. Required when you want to have traits in your cards.
+        </li>
+        <li>
+            <code>p2e_trait</code>  - Shows a trait.
+            <ul>
+                <li><em>Param1</em>  - Trait rarity (common, uncommon, size, alignment).</li>
+                <li><em>Param2</em>  - Trait text.</li>
+            </ul>
+        </li>
+        <li>
+            <code>p2e_end_trait_section</code> - End of traits section. Required when you want to have traits in your cards.
+        </li>   
+    </ul>
+</p>
+<h4>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Other Pathfinder 2nd Edition Card Elements
+</h4>
+<p>
+    Some other card elements you may find useful while creating Pathfinder 2nd Edition themed cards.
+
+    <ul>
+        <li>
+            <code>ruler</code> - Creates a single, thin black line for content separation.
+        </li> 
+    </ul>
+</p>
+
+
+<h3>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Special tags
+</h3>
+
+<p>
+    You can use special non-standard HTML tags created especially for this card editor:
+    <pre>&lt;tag param1="" param2="" ...&gt;</pre><br />
+
+    The following special HTML tags are available:
+
+    <ul>
+        <li>
+            <code>icon</code>
+            Prints a game icon using the <a href="https://github.com/seiyria/gameicons-font">gameicons-font</a>.
+            <ul>
+                <li><em>name</em> the name of the icon.</li>
+                <li><em>size</em> the size of the icon. If no CSS unit is specified, "pt" will be used.</li>
+                <li><em>color</em> the color of the icon.</li>
+                <li><em>style</em> the inline CSS style.</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+
+<h2>FAQ</h2>
+
+<h3>
+    <a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>
+    Can I change the layout of the cards?
+</h3>
+
+<p>
+    You'll need to edit the CSS and Javascript files to change the layout at this point.
+    I might add some customization options later on.
+</p>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Rpg-cards created by <a href="https://github.com/crobi">crobi</a> and maintained by <a href="https://github.com/mephitrpg">jure</a></p>
+      </footer>
+    </div>
+
+  </body>
+</html>

@@ -1,72 +1,74 @@
-rpg-cards
-=========
+# rpg-cards
 
-RPG spell/item/monster card generator
+RPG spell/item/monster card generator — make print-ready card sheets for D&D 5e, Pathfinder 2e, Savage Worlds, Shadowrun 6e and any other tabletop game.
 
-Preview
-=======
+Live app: <https://mephitrpg.github.io/rpg-cards/>
 
-Click [here](https://mephitrpg.github.io/rpg-cards/) for a live preview of this generator.
+## Stack
 
-Documentation
-=============
+React 19 (with React Compiler) · TypeScript (strict) · Vite · Tailwind CSS v4 · shadcn/ui · Zustand · Biome · Vitest · Playwright.
 
-Click [here](https://mephitrpg.github.io/rpg-cards/documentation.html) to read the documentation.
+The card-generation engine is a **pure TypeScript port of the original engine** (`src/engine/`): it still produces the same HTML, byte-for-byte, proven by golden-master fixtures captured from the legacy implementation (`tests/golden/`). Deck JSON files and browser-stored decks from every historical version keep loading unchanged.
 
-Installation and Updating
-=========================
+## Architecture
 
-This project consists almost exclusively of static HTML/CSS/JavaScript files, but it needs to be build at least one time to work.
+```
+src/
+├── engine/            # pure TS card engine (no React, no DOM)
+│   ├── directives.ts  #   ~35 content-line directives (text, dndstats, p2e_*, ...)
+│   ├── card.ts        #   front/back card HTML generation
+│   ├── pages.ts       #   page layout: doublesided / front_only / side-by-side
+│   ├── icons/         #   generated icon manifest (pnpm gen:icons)
+│   └── __tests__/     #   golden-master parity tests
+├── app/
+│   ├── store/         # Zustand deck store (cards, options, settings)
+│   ├── persistence/   # legacy-compatible localStorage + deck file I/O
+│   ├── render/        # DOMPurify boundary + EngineContext (icon URLs, measurement)
+│   ├── components/    # editor UI (deck panel, card editor, pickers, settings)
+│   └── routes/        # Editor (/) and PrintPreview (#/print)
+└── styles/            # Tailwind app theme + legacy card CSS (generated copies)
+```
 
-The build will update /generator/icons folder with content from:
-- The [game-icons](http://game-icons.net) project.
-- Fonts from the [gameicons-font](https://seiyria.com/gameicons-font) project.
-- And any .png or .svg files you have added to ./resources/custom-icons (you must build the project and refresh the page in the browser in order to use them).
+Host-environment concerns are injected into the engine through `EngineContext` (icon URL resolution and one DOM measurement), which keeps the engine testable in plain Node.
 
+## Development
 
-To setup or update this project:
+Requires [Node.js](https://nodejs.org/) ≥ 22 (pnpm is provided via corepack).
 
-1. Checkout this GIT repository
-2. Make sure you have [Node.js](https://nodejs.org/) installed. The Node installation usually bundles the `npm` command-line interface. We strongly recommend using a Node version manager like [nvm](https://github.com/nvm-sh/nvm) to install Node.js and npm.
-3. Open the Terminal (or Command Prompt for Windows)
-4. Go to the repository folder
-4. Run `npm install`
+```sh
+corepack enable pnpm
+pnpm install
+pnpm build:icons   # one-time: download the icon set from game-icons.net
+pnpm gen:icons     # regenerate the icon manifest + generated CSS
+pnpm dev           # editor at http://localhost:5173/rpg-cards/
+```
 
-To build this project:
+Common tasks:
 
-- Run `npm run build`
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` / `pnpm build` / `pnpm preview` | Vite dev server / production build / serve the build |
+| `pnpm test` | unit tests incl. golden-master engine parity |
+| `pnpm test:e2e` | Playwright end-to-end tests |
+| `pnpm test:visual` | print-output pixel parity tests |
+| `pnpm lint` / `pnpm format` / `pnpm typecheck` | Biome lint / format / tsc |
+| `pnpm build:icons` | refresh the icon set (game-icons.net + `resources/custom-icons`) |
+| `pnpm gen:icons` | regenerate `manifest.gen.ts` + `src/styles/generated/` |
 
-To lanunch the generator locally on your browser:
+The icon SVGs (~18 MB) are a build artifact and are **not** committed; CI downloads and caches them.
 
-- Run `npm start` to run the local HTTP server, then open one of the indicated URLs (e.g. http://localhost:8080) in your browser. Please use localhost instead of other aliases, since it is treated as a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts). This enables access to more advanced JavaScript features.
+## Printing
 
-To deply the generator into a website:
+Click **Generate** to open the print preview, then print from the browser (enable *background graphics* in the print dialog). Page size, card size, rows/columns, double-sided arrangement, bleed and crop marks are configured in the Page settings panel.
 
-- Deploy the content of the `./generator` folder to your server (i.e. using an FTP client)
+## FAQ
 
+- **What browsers are supported?** Modern Chromium browsers give the most accurate prints (`@page` size support); Firefox and Safari work for editing.
+- **Cards print without colors/icons?** Enable printing background images in the browser print dialog.
+- **Cards overflow the page?** Check page size, card size and rows/columns — 4×4 poker cards don't fit on A4.
 
-Support
-=======
-
-I (the original author) am not maintaining the project anymore, and will not be responding to issues or reviewing PRs.
-However, I have given write access to a few collaborators that are maintaining the project.
-Please reach out to me if you want to be included as collaborator, or if you want to take ownership of this project.
-
-FAQ
-=====================
-
-- What browsers are supported?
-  - A modern browser (Chrome, Edge, Safari).
-  - IE and Firefox are not supported (Firefox due to privacy concerns).
-- Cards are generated without icons and background colors, what's wrong?
-  - Enable printing backround images in your browser print dialog
-- The layout of the cards is broken (e.g., cards are placed outside the page), what's wrong?
-  - Check your page size, card size, and cards/page settings. If you ask the generator to place 4x4 poker-sized cards on a A4 paper, they won't fit and they will overflow the page.
-
-License
-=======
+## License
 
 This generator is provided under the terms of the MIT License.
 
-Icons are made by various artists, available at [http://game-icons.net](http://game-icons.net).
-They are provided under the terms of the Creative Commons 3.0 BY license.
+Icons are made by various artists, available at [game-icons.net](https://game-icons.net), provided under the terms of the Creative Commons 3.0 BY license.

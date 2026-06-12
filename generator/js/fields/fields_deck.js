@@ -1,2 +1,0 @@
-UI_FIELDS_CONFIGURATION_PREPARE.set('deck', () => [
-]);

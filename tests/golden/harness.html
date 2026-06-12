@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+  Golden-master capture harness.
+
+  Loads the FROZEN legacy engine (generator/js/cards.js and friends) with the
+  same script/CSS environment as the legacy editor page, so that
+  card_pages_generate_html and the card-back measurement behave exactly as in
+  production. Served from the repo root (http-server . -p 8081) so legacy
+  asset paths resolve under /generator/.
+
+  Used only by tests/golden/capture.spec.ts.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>rpg-cards golden capture harness</title>
+
+    <script src="/generator/lib/math/math.15.0.0.min.js"></script>
+    <script>
+      math.config({ number: 'BigNumber' });
+    </script>
+    <script src="/generator/lib/jquery/jquery.min.js"></script>
+
+    <link href="/generator/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/generator/lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="/generator/lib/colorpicker/css/bootstrap-colorselector.css" rel="stylesheet" />
+    <link href="/generator/fonts/game-icons.css" rel="stylesheet" />
+    <link href="/generator/css/ui.css" rel="stylesheet" />
+    <link href="/generator/css/cards.css" rel="stylesheet" />
+    <link href="/generator/css/card-size.css" rel="stylesheet" />
+    <link href="/generator/css/icons.css" rel="stylesheet" />
+    <link href="/generator/css/custom-icons.css" rel="stylesheet" />
+    <link href="/generator/css/style.css" rel="stylesheet" />
+
+    <script src="/generator/js/common.js"></script>
+    <script src="/generator/js/colors.js"></script>
+    <script src="/generator/js/cards.js"></script>
+
+    <script>
+      // Mirrors the temp-card measurement in cards.js card_generate_back
+      // (lines 1181-1200) so fixtures can record the .card-back-inner size
+      // that the legacy engine measured for a given options set.
+      function harness_measure_back_inner(options, isPreview) {
+        var data = {};
+        var color = card_data_color_back(data, options);
+        var style_color = card_generate_color_back_style(color, data, options);
+        var width = options.card_width;
+        var height = options.card_height;
+        var card_width = 'calc(' + width + ' + ' + options.back_bleed_width + ')';
+        var card_height = 'calc(' + height + ' + ' + options.back_bleed_height + ')';
+        var card_style = isPreview
+          ? add_size_to_style(style_color, width, height)
+          : add_size_to_style(style_color, card_width, card_height);
+
+        var $tmpCard = $(card_generate_back_html({ card_style: card_style }));
+        var $tmpCardContainer = $(
+          '<div style="position:absolute;visibility:hidden;pointer-events:none;"></div>'
+        );
+        $('#preview-container').append($tmpCardContainer.append($tmpCard));
+        var $tmpCardInner = $tmpCard.find('.card-back-inner');
+        var result = { width: $tmpCardInner.width(), height: $tmpCardInner.height() };
+        $tmpCardContainer.remove();
+        return result;
+      }
+
+      window.harnessReady = true;
+    </script>
+  </head>
+  <body>
+    <div id="preview-container" class="preview-container"></div>
+  </body>
+</html>

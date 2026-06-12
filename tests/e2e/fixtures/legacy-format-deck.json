@@ -1,0 +1,16 @@
+[
+  {
+    "count": 1,
+    "title": "Old Mage",
+    "icon": "crystal-ball",
+    "color": "Indigo",
+    "contents": ["text | legacy card"],
+    "tags": ["old"]
+  },
+  {
+    "count": 2,
+    "title": "Old Sword",
+    "contents": ["text | second legacy card"],
+    "tags": ["old", "weapon"]
+  }
+]
