@@ -19,8 +19,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], baseURL: NEW_APP },
     },
     {
+      // Serial: shares the fixed-port :8081 icon-origin server across tests,
+      // and pixel comparisons are more stable without worker contention.
       name: 'visual',
       testDir: 'tests/visual',
+      fullyParallel: false,
       use: { ...devices['Desktop Chrome'], baseURL: NEW_APP },
     },
     {

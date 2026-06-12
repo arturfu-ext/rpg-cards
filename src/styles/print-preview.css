@@ -1,0 +1,40 @@
+/*
+ * Print preview route chrome — adaptation of the legacy output page styles
+ * (generator/css/output.css, generated copy in generated/output.gen.css).
+ * The legacy <body class="page-background"> role is played by
+ * .print-preview-root; page styling rules carry over unchanged.
+ */
+
+.print-preview-root {
+  background: rgb(204, 204, 204);
+  min-height: 100vh;
+  padding-top: 16px;
+}
+
+.print-preview-root .page-preview {
+  background: white;
+  margin: 0 auto;
+  margin-bottom: 16px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+@media print {
+  .print-preview-root {
+    background: gray;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    min-height: 0;
+  }
+  .print-preview-root .page-preview {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background-color: white;
+  }
+  .print-preview-root .page-zoom-preview {
+    margin: 0;
+  }
+}

@@ -7,7 +7,7 @@ import { create } from 'zustand';
 import { percentOf, ratioOf, scaleByPercent, scaleByRatio } from '@/app/lib/size-math';
 import { legacy_card_data } from '@/app/persistence/legacy';
 import { type AppSettings, default_app_settings } from '@/app/types';
-import { default_card_data, default_card_options } from '@/engine/options';
+import { card_has_tag, default_card_data, default_card_options } from '@/engine/options';
 import type { Card, CardOptions } from '@/engine/types';
 import { isLandscape } from '@/engine/units';
 
@@ -236,10 +236,15 @@ export const useDeckStore = create<DeckState>()((set, get) => ({
   },
 
   filterCards(fnBody) {
-    const fn = new Function('card', fnBody) as (c: Card) => boolean | undefined;
+    // card_has_tag was a page global in legacy (cards.js:58) and the stock
+    // filter sample references it, so it is passed into the body's scope.
+    const fn = new Function('card', 'card_has_tag', fnBody) as (
+      c: Card,
+      hasTag: typeof card_has_tag,
+    ) => boolean | undefined;
     set((s) => ({
       cards: s.cards.filter((card) => {
-        const result = fn(card);
+        const result = fn(card, card_has_tag);
         return result === undefined ? true : result;
       }),
     }));
