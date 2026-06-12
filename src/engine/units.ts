@@ -53,3 +53,11 @@ export function getOrientation(
     return 'portrait';
   }
 }
+
+// common.js:192-194
+export function isLandscape(
+  width: string | number | null | undefined,
+  height: string | number | null | undefined,
+): boolean {
+  return getOrientation(width || 0, height || 0) === 'landscape';
+}

@@ -1,0 +1,138 @@
+/*
+ * Bootstrap-3-equivalent baseline for engine-rendered card HTML.
+ *
+ * The legacy output page (generator/output.html) loaded bootstrap.min.css
+ * before cards.css, so card content inherited Bootstrap's element styles
+ * wherever cards.css did not override them. Tailwind's preflight resets
+ * these very differently (no list bullets, zeroed margins, block images),
+ * so this sheet restores the Bootstrap values for everything the engine or
+ * user-supplied HTML can emit inside a card.
+ *
+ * Every rule uses :where(.rpg-cards-render) so specificity stays (0,0,1) —
+ * identical to Bootstrap's bare element selectors — and cards.css class
+ * rules keep winning exactly as they did in the legacy cascade. This file
+ * must be imported BEFORE cards.gen.css (Bootstrap came first in legacy).
+ *
+ * Values extracted from generator/lib/bootstrap/css/bootstrap.min.css.
+ */
+
+.rpg-cards-render {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+}
+
+:where(.rpg-cards-render) p {
+  margin: 0 0 10px;
+}
+
+:where(.rpg-cards-render) ul,
+:where(.rpg-cards-render) ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-left: 40px;
+}
+
+:where(.rpg-cards-render) ul {
+  list-style: disc;
+}
+
+:where(.rpg-cards-render) ol {
+  list-style: decimal;
+}
+
+:where(.rpg-cards-render) table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: transparent;
+}
+
+:where(.rpg-cards-render) td,
+:where(.rpg-cards-render) th {
+  padding: 0;
+}
+
+:where(.rpg-cards-render) th {
+  text-align: left;
+}
+
+:where(.rpg-cards-render) h1,
+:where(.rpg-cards-render) h2,
+:where(.rpg-cards-render) h3,
+:where(.rpg-cards-render) h4,
+:where(.rpg-cards-render) h5,
+:where(.rpg-cards-render) h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+}
+
+:where(.rpg-cards-render) h1,
+:where(.rpg-cards-render) h2,
+:where(.rpg-cards-render) h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+:where(.rpg-cards-render) h4,
+:where(.rpg-cards-render) h5,
+:where(.rpg-cards-render) h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+:where(.rpg-cards-render) h1 {
+  font-size: 36px;
+}
+:where(.rpg-cards-render) h2 {
+  font-size: 30px;
+}
+:where(.rpg-cards-render) h3 {
+  font-size: 24px;
+}
+:where(.rpg-cards-render) h4 {
+  font-size: 18px;
+}
+:where(.rpg-cards-render) h5 {
+  font-size: 14px;
+}
+:where(.rpg-cards-render) h6 {
+  font-size: 12px;
+}
+
+:where(.rpg-cards-render) b,
+:where(.rpg-cards-render) strong {
+  font-weight: bold;
+}
+
+:where(.rpg-cards-render) small {
+  font-size: 80%;
+}
+
+:where(.rpg-cards-render) img {
+  display: inline;
+  max-width: none;
+  height: auto;
+  border: 0;
+  vertical-align: middle;
+}
+
+:where(.rpg-cards-render) svg {
+  display: inline;
+  vertical-align: baseline;
+}
+
+:where(.rpg-cards-render) svg:not(:root) {
+  overflow: hidden;
+}
+
+:where(.rpg-cards-render) hr {
+  box-sizing: content-box;
+  height: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #eee;
+}

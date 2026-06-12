@@ -17,22 +17,22 @@ export function forEachMatch(
 export function replace_inline_icons(html: string): string {
   const tagNames = ['icon'];
 
-  tagNames.forEach(function (tagName) {
+  tagNames.forEach((tagName) => {
     const tagRegExp = new RegExp(`<${tagName}[^>]*>`, 'g');
-    const attrRegExp = new RegExp(`([\\w-]+)="([^"]+)"`, 'g');
+    const attrRegExp = /([\w-]+)="([^"]+)"/g;
 
     const matches: RegExpExecArray[] = [];
-    forEachMatch(tagRegExp, html, function (m) {
+    forEachMatch(tagRegExp, html, (m) => {
       matches.push(m);
     });
     // cards.js:973 — legacy `return null` from the forEach callback; bare return is identical
     if (!matches.length) return;
 
     const tagResults = new Array<string>(matches.length);
-    matches.forEach(function (match, i) {
+    matches.forEach((match, i) => {
       if (tagName === 'icon') {
         const attrs: Record<string, string> = {};
-        forEachMatch(attrRegExp, match[0], function (m) {
+        forEachMatch(attrRegExp, match[0], (m) => {
           const [attrName, attrValue] = m.splice(1);
           if (attrName === 'name') {
             if (!attrs.class) attrs.class = '';
@@ -46,7 +46,7 @@ export function replace_inline_icons(html: string): string {
             attrs.style += 'color:' + attrValue + ';';
           }
         });
-        forEachMatch(attrRegExp, match[0], function (m) {
+        forEachMatch(attrRegExp, match[0], (m) => {
           const attrName = m[1];
           const attrValue = m[2];
           if (attrName === 'style') {
@@ -55,7 +55,7 @@ export function replace_inline_icons(html: string): string {
           }
         });
         let tagResult = '<i';
-        Object.keys(attrs).forEach(function (k) {
+        Object.keys(attrs).forEach((k) => {
           tagResult += ' ' + k + '="' + attrs[k] + '"';
         });
         tagResult += '></i>';
@@ -63,7 +63,7 @@ export function replace_inline_icons(html: string): string {
       }
     });
 
-    html = html.replace(tagRegExp, function () {
+    html = html.replace(tagRegExp, () => {
       // cards.js:1010-1012 — explicit String(): replace() applies ToString to the legacy shift() result
       return String(tagResults.shift());
     });

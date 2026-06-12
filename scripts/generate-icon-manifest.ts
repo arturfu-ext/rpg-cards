@@ -122,6 +122,18 @@ emitCss(GAME_ICONS_CSS, 'game-icons.gen.css', (css) =>
   css.replaceAll('url("game-icons.', 'url("/rpg-cards/fonts/game-icons.'),
 );
 
+// The card/print stylesheets carry over from the frozen legacy sources
+// (single source of truth until the Phase F cutover). They contain no asset
+// URLs. One semantic rewrite: the legacy output page used Bootstrap 3's
+// html{font-size:10px}, so rem values are rebased to their legacy pixel
+// size (Nrem -> N*10px) — the new app keeps the browser's 16px root for
+// Tailwind.
+const rebaseRem = (css: string): string =>
+  css.replace(/(\d*\.?\d+)rem\b/g, (_m, n: string) => `${parseFloat(n) * 10}px`);
+emitCss(join(ROOT, 'generator/css/cards.css'), 'cards.gen.css', rebaseRem);
+emitCss(join(ROOT, 'generator/css/card-size.css'), 'card-size.gen.css', rebaseRem);
+emitCss(join(ROOT, 'generator/css/output.css'), 'output.gen.css', rebaseRem);
+
 // 6. Summary.
 console.log(`icons.css rules:        ${baseRuleCount}`);
 console.log(`custom-icons.css rules: ${customRuleCount}`);

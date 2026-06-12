@@ -53,7 +53,7 @@ export function card_element_icon(
   }
   let result = `<div class="card-title-${classname}-container">`;
   result += icons
-    .map(function (icon) {
+    .map((icon) => {
       // ctx.iconUrl replaces the hidden <img> computed-style lookup (cards.js:167-175)
       let imgUrl: string | null = ctx.iconUrl(icon);
       // sanitize url
@@ -84,7 +84,7 @@ export function card_generate_contents(
   const contents = card_data.contents;
 
   let html = contents
-    .map(function (value) {
+    .map((value) => {
       const [element_name, ...element_params] = card_data_split_params(value);
       // element_name! — split() always yields at least one element (cards.js:952)
       const element_generator = card_element_generators[element_name!];

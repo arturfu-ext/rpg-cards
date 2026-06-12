@@ -170,7 +170,7 @@ export function card_pages_generate_html(
   // Generate the HTML for each card
   let front_cards: string[] = [];
   let back_cards: string[] = [];
-  card_data.forEach(function (data) {
+  card_data.forEach((data) => {
     // options! — non-null after the reassignment above; TS drops the narrowing inside closures (cards.js:1390-1396)
     const count = options!.card_count || data.count || 1;
     const front = card_generate_front(data, options!, { isPreview: false }, ctx);
