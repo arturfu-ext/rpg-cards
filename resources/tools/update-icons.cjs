@@ -78,6 +78,25 @@ function unzipAll(src, dest) {
 // ----------------------------------------------------------------------------
 // Generate CSS
 // ----------------------------------------------------------------------------
+// The icon dir can hold the same basename with two extensions (e.g.
+// mixed-swords.png from resources/custom-icons and mixed-swords.svg from
+// resources/custom-icons-assets, kept on disk so the custom-icons.css alias
+// URLs resolve). Class/picker names must stay unique: keep the first file in
+// sorted order (.png sorts before .svg, preserving the historical rules).
+function uniqueIconFiles(files) {
+    const imageExtensions = [".svg", ".png"];
+    const seen = new Set();
+    return files
+        .filter(fileName => imageExtensions.find(ext => ext === path.extname(fileName)))
+        .sort()
+        .filter(fileName => {
+            const base = path.basename(fileName, path.extname(fileName));
+            if (seen.has(base)) return false;
+            seen.add(base);
+            return true;
+        });
+}
+
 function generateCSS(src, dest) {
     console.log("  Generating CSS...");
     return new Promise((resolve, reject) => {
@@ -86,9 +105,7 @@ function generateCSS(src, dest) {
                 reject(err);
             }
             else {
-                const imageExtensions = [".svg", ".png"];
-                const content = files
-                    .filter(fileName => imageExtensions.find(ext => ext === path.extname(fileName)))
+                const content = uniqueIconFiles(files)
                     .map(name => `.icon-${path.basename(name, path.extname(name))} { background-image: url(../icons/${name});}\n`)
                     .join("");
                 fse.writeFile(dest, content, err => {
@@ -115,9 +132,7 @@ function generateJS(src, dest) {
                 reject(err);
             }
             else {
-                const imageExtensions = [".svg", ".png"];
-                const content = "var icon_names = [\n" + files
-                    .filter(fileName => imageExtensions.find(ext => ext === path.extname(fileName)))
+                const content = "var icon_names = [\n" + uniqueIconFiles(files)
                     .map(name => `    "${path.basename(name, path.extname(name))}"`)
                     .join(",\n") + "\n]";
                 fse.writeFile(dest, content, err => {
@@ -181,18 +196,29 @@ function moveAll(src, dest) {
     });
 }
 
-fse.emptyDir(tempDir)
-    .then(() => console.log("Icons: start"))
-    .then(() => cleanDirectory(tempDir))
-    .then(() => downloadFile(downloadUrl, tempFilePath))
-    .then(() => unzipAll(tempFilePath, tempDir))
-    .then(() => removeFile(tempFilePath))
-    .then(() => cleanDirectory(iconDir))
-    .then(() => moveAll(tempDir, iconDir))
-    .then(() => copyAll(customIconDir, iconDir))
-    .then(() => copyAll(customIconAssetsDir, iconDir))
-    .then(() => generateCSS(iconDir, cssPath))
-    .then(() => generateJS(iconDir, jsPath))
-    .then(() => cleanDirectory(tempDir))
-    .then(() => console.log("Icons: done"))
-    .catch(err => console.log("Icons: error", err));
+// --regen-only: rebuild icons.css/icons.js from the existing icon dir
+// without re-downloading the icon set.
+if (process.argv.includes("--regen-only")) {
+    Promise.resolve()
+        .then(() => console.log("Icons: regenerate css/js only"))
+        .then(() => generateCSS(iconDir, cssPath))
+        .then(() => generateJS(iconDir, jsPath))
+        .then(() => console.log("Icons: done"))
+        .catch(err => console.log("Icons: error", err));
+} else {
+    fse.emptyDir(tempDir)
+        .then(() => console.log("Icons: start"))
+        .then(() => cleanDirectory(tempDir))
+        .then(() => downloadFile(downloadUrl, tempFilePath))
+        .then(() => unzipAll(tempFilePath, tempDir))
+        .then(() => removeFile(tempFilePath))
+        .then(() => cleanDirectory(iconDir))
+        .then(() => moveAll(tempDir, iconDir))
+        .then(() => copyAll(customIconDir, iconDir))
+        .then(() => copyAll(customIconAssetsDir, iconDir))
+        .then(() => generateCSS(iconDir, cssPath))
+        .then(() => generateJS(iconDir, jsPath))
+        .then(() => cleanDirectory(tempDir))
+        .then(() => console.log("Icons: done"))
+        .catch(err => console.log("Icons: error", err));
+}
