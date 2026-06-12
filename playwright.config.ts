@@ -53,8 +53,11 @@ export default defineConfig({
     : [
         {
           // corepack pnpm: the bare pnpm shim is not reliably on PATH in
-          // Playwright's spawned shell.
-          command: 'corepack pnpm build && corepack pnpm preview --port 4173 --strictPort',
+          // Playwright's spawned shell. --host 127.0.0.1: vite's default
+          // 'localhost' binds ::1-only on Linux runners while Playwright
+          // polls the IPv4 URL, hanging the webServer check forever.
+          command:
+            'corepack pnpm build && corepack pnpm preview --host 127.0.0.1 --port 4173 --strictPort',
           url: NEW_APP,
           reuseExistingServer: !process.env.CI,
           timeout: 180_000,
