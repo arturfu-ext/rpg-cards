@@ -573,12 +573,7 @@ export function DeckPanel() {
                 <ul className="list-disc pl-5">
                   <li>
                     read the{' '}
-                    <a
-                      className="underline"
-                      href="generator/about.html"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a className="underline" href="about.html" target="_blank" rel="noreferrer">
                       Basic documentation
                     </a>
                   </li>
@@ -586,7 +581,7 @@ export function DeckPanel() {
                     read the{' '}
                     <a
                       className="underline"
-                      href="generator/documentation.html"
+                      href="documentation.html"
                       target="_blank"
                       rel="noreferrer"
                     >

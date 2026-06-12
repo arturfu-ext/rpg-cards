@@ -24,6 +24,14 @@ const NEW_APP = 'http://127.0.0.1:4173/rpg-cards/';
 const LEGACY_OUTPUT = 'http://127.0.0.1:8080/output.html';
 const DIFF_DIR = path.join(ROOT, 'test-results/print-parity-diffs');
 
+// The legacy reference was deleted at the end of the migration (tag
+// legacy-archive). Parity was proven against it before deletion; these
+// tests only run where the legacy tree exists (checkout of the tag).
+test.skip(
+  !fs.existsSync(path.join(ROOT, 'generator')),
+  'legacy reference removed — parity is frozen (see tag legacy-archive)',
+);
+
 /** Subset of golden pairs that exercises every layout/content path visually. */
 const VISUAL_PAIRS = [
   { deck: 'sample-deck', options: 'default' },

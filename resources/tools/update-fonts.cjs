@@ -10,7 +10,7 @@ const cssFileName = "game-icons.css";
 const eotFileName = "game-icons.eot";
 const ttfFileName = "game-icons.ttf";
 const woffFileName = "game-icons.woff";
-const destDir = "./generator/fonts";
+const destDir = "./public/fonts";
 
 // ----------------------------------------------------------------------------
 // Download

@@ -1,9 +1,6 @@
 # Generated icon assets (downloaded from game-icons.net via `pnpm build:icons`)
-/generator/css/icons.css
-/generator/icons/
-/generator/js/*.d.ts
-/generator/js/*.map
-/generator/js/icons.js
+/public/icons/
+/resources/generated/
 
 # Dependencies and build output
 /node_modules/

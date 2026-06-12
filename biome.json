@@ -8,9 +8,9 @@
   "files": {
     "includes": [
       "**",
-      "!generator",
       "!resources",
       "!dist",
+      "!public",
       "!**/*.gen.ts",
       "!**/*.gen.css",
       "!tests/golden/fixtures",

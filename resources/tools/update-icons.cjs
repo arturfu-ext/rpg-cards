@@ -6,10 +6,11 @@ const yauzl = require("yauzl");
 const downloadUrl = "https://game-icons.net/archives/svg/zip/ffffff/transparent/game-icons.net.svg.zip";
 const tempDir = "./temp";
 const tempFilePath = tempDir + "/temp" + Date.now() + ".zip";
-const iconDir = "./generator/icons";
+const iconDir = "./public/icons";
 const customIconDir = "./resources/custom-icons";
-const cssPath = "./generator/css/icons.css";
-const jsPath = "./generator/js/icons.js";
+const customIconAssetsDir = "./resources/custom-icons-assets";
+const cssPath = "./resources/generated/icons.css";
+const jsPath = "./resources/generated/icons.js";
 
 
 // ----------------------------------------------------------------------------
@@ -189,6 +190,7 @@ fse.emptyDir(tempDir)
     .then(() => cleanDirectory(iconDir))
     .then(() => moveAll(tempDir, iconDir))
     .then(() => copyAll(customIconDir, iconDir))
+    .then(() => copyAll(customIconAssetsDir, iconDir))
     .then(() => generateCSS(iconDir, cssPath))
     .then(() => generateJS(iconDir, jsPath))
     .then(() => cleanDirectory(tempDir))

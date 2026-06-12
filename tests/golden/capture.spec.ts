@@ -15,6 +15,13 @@ import { GOLDEN_ORIGIN, GOLDEN_PAIRS, type GoldenFixture } from './pairs';
 const ROOT = path.resolve(import.meta.dirname, '../..');
 const FIXTURES_DIR = path.join(ROOT, 'tests/golden/fixtures');
 
+// The legacy engine was deleted at the end of the migration (tag
+// legacy-archive); the committed fixtures are the permanent parity contract.
+test.skip(
+  !fs.existsSync(path.join(ROOT, 'generator')),
+  'legacy engine removed — fixtures are frozen (see tag legacy-archive)',
+);
+
 let server: ChildProcess;
 
 test.beforeAll(async () => {

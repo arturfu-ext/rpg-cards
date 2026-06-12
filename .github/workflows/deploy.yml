@@ -39,15 +39,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            generator/icons
-            generator/css/icons.css
-            generator/js/icons.js
+            public/icons
+            resources/generated
           key: game-icons-${{ hashFiles('resources/tools/update-icons.cjs') }}-${{ github.run_id }}
           restore-keys: |
             game-icons-${{ hashFiles('resources/tools/update-icons.cjs') }}-
 
       - name: Download icon assets (cache miss)
-        if: hashFiles('generator/css/icons.css') == ''
+        if: hashFiles('resources/generated/icons.css') == ''
         run: pnpm build:icons
 
       - name: Regenerate icon manifest

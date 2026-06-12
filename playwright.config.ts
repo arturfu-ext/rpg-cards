@@ -1,7 +1,16 @@
+import fs from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
 
 const NEW_APP = 'http://127.0.0.1:4173/rpg-cards/';
 const LEGACY_APP = 'http://127.0.0.1:8080/';
+
+/**
+ * The legacy reference app was removed at the end of the migration (tag
+ * `legacy-archive`); golden fixtures and the recorded parity results are the
+ * frozen contract. When generator/ is absent, the legacy server is not
+ * started and the legacy-dependent specs skip themselves.
+ */
+const LEGACY_PRESENT = fs.existsSync(new URL('./generator', import.meta.url));
 
 export default defineConfig({
   testDir: 'tests',
@@ -50,11 +59,15 @@ export default defineConfig({
           reuseExistingServer: !process.env.CI,
           timeout: 180_000,
         },
-        {
-          command: 'corepack pnpm legacy:start',
-          url: `${LEGACY_APP}index.html`,
-          reuseExistingServer: !process.env.CI,
-          timeout: 30_000,
-        },
+        ...(LEGACY_PRESENT
+          ? [
+              {
+                command: 'corepack pnpm exec http-server ./generator -p 8080',
+                url: `${LEGACY_APP}index.html`,
+                reuseExistingServer: !process.env.CI,
+                timeout: 30_000,
+              },
+            ]
+          : []),
       ],
 });

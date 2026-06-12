@@ -1,5 +1,6 @@
 // Generates src/engine/icons/manifest.gen.ts and URL-rewritten CSS copies in
-// src/styles/generated/ from the frozen legacy sources under generator/.
+// src/styles/generated/ from resources/legacy-css (tracked legacy sources)
+// and resources/generated (artifacts of pnpm build:icons).
 // Run via: corepack pnpm gen:icons
 
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -8,10 +9,10 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-const ICONS_CSS = join(ROOT, 'generator/css/icons.css');
-const CUSTOM_ICONS_CSS = join(ROOT, 'generator/css/custom-icons.css');
-const PICKER_JS = join(ROOT, 'generator/js/icons.js');
-const GAME_ICONS_CSS = join(ROOT, 'generator/fonts/game-icons.css');
+const ICONS_CSS = join(ROOT, 'resources/generated/icons.css');
+const CUSTOM_ICONS_CSS = join(ROOT, 'resources/legacy-css/custom-icons.css');
+const PICKER_JS = join(ROOT, 'resources/generated/icons.js');
+const GAME_ICONS_CSS = join(ROOT, 'public/fonts/game-icons.css');
 
 const OUT_MANIFEST = join(ROOT, 'src/engine/icons/manifest.gen.ts');
 const OUT_STYLES_DIR = join(ROOT, 'src/styles/generated');
@@ -130,12 +131,12 @@ emitCss(GAME_ICONS_CSS, 'game-icons.gen.css', (css) =>
 // Tailwind.
 const rebaseRem = (css: string): string =>
   css.replace(/(\d*\.?\d+)rem\b/g, (_m, n: string) => `${parseFloat(n) * 10}px`);
-emitCss(join(ROOT, 'generator/css/cards.css'), 'cards.gen.css', rebaseRem);
-emitCss(join(ROOT, 'generator/css/card-size.css'), 'card-size.gen.css', rebaseRem);
-emitCss(join(ROOT, 'generator/css/output.css'), 'output.gen.css', rebaseRem);
+emitCss(join(ROOT, 'resources/legacy-css/cards.css'), 'cards.gen.css', rebaseRem);
+emitCss(join(ROOT, 'resources/legacy-css/card-size.css'), 'card-size.gen.css', rebaseRem);
+emitCss(join(ROOT, 'resources/legacy-css/output.css'), 'output.gen.css', rebaseRem);
 // The fork's style.css (loaded LAST on the legacy output page) carries a
 // .game-icon line-height override that must keep winning the cascade.
-emitCss(join(ROOT, 'generator/css/style.css'), 'style.gen.css', rebaseRem);
+emitCss(join(ROOT, 'resources/legacy-css/style.css'), 'style.gen.css', rebaseRem);
 
 // 6. Summary.
 console.log(`icons.css rules:        ${baseRuleCount}`);
