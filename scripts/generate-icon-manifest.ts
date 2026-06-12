@@ -133,6 +133,9 @@ const rebaseRem = (css: string): string =>
 emitCss(join(ROOT, 'generator/css/cards.css'), 'cards.gen.css', rebaseRem);
 emitCss(join(ROOT, 'generator/css/card-size.css'), 'card-size.gen.css', rebaseRem);
 emitCss(join(ROOT, 'generator/css/output.css'), 'output.gen.css', rebaseRem);
+// The fork's style.css (loaded LAST on the legacy output page) carries a
+// .game-icon line-height override that must keep winning the cascade.
+emitCss(join(ROOT, 'generator/css/style.css'), 'style.gen.css', rebaseRem);
 
 // 6. Summary.
 console.log(`icons.css rules:        ${baseRuleCount}`);

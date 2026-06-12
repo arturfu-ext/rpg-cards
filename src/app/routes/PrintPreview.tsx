@@ -5,6 +5,7 @@
  * visibility and the fix-icon-size pass.
  */
 import { useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router';
 import { browserEngineContext } from '@/app/render/engine-context';
 import { sanitizePages } from '@/app/render/sanitize';
@@ -46,8 +47,8 @@ export function PrintPreview() {
   }, [generated, options]);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between border-b bg-background px-4 py-2 print:hidden">
+    <>
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background px-4 py-2 print:hidden">
         <div className="flex items-center gap-3">
           <Button asChild variant="ghost" size="sm">
             <Link to="/">← Back to editor</Link>
@@ -60,14 +61,20 @@ export function PrintPreview() {
       </header>
 
       {docHtml ? (
-        <div
-          ref={containerRef}
-          className="rpg-cards-render print-preview-root flex-1"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via sanitizePages
-          dangerouslySetInnerHTML={{ __html: docHtml }}
-        />
+        // Portaled to <body> so <page> elements fragment against the body in
+        // print, like the legacy output page — nesting them under #root makes
+        // Chromium spill a blank trailing PDF page.
+        createPortal(
+          <div
+            ref={containerRef}
+            className="rpg-cards-render print-preview-root"
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via sanitizePages
+            dangerouslySetInnerHTML={{ __html: docHtml }}
+          />,
+          document.body,
+        )
       ) : (
-        <main className="flex flex-1 items-center justify-center p-8 text-center">
+        <main className="flex h-[80vh] items-center justify-center p-8 text-center">
           <div>
             <p className="text-muted-foreground">
               {generated && 'error' in generated
@@ -80,6 +87,6 @@ export function PrintPreview() {
           </div>
         </main>
       )}
-    </div>
+    </>
   );
 }

@@ -43,13 +43,15 @@ export default defineConfig({
     ? []
     : [
         {
-          command: 'pnpm build && pnpm preview --port 4173 --strictPort',
+          // corepack pnpm: the bare pnpm shim is not reliably on PATH in
+          // Playwright's spawned shell.
+          command: 'corepack pnpm build && corepack pnpm preview --port 4173 --strictPort',
           url: NEW_APP,
           reuseExistingServer: !process.env.CI,
           timeout: 180_000,
         },
         {
-          command: 'pnpm legacy:start',
+          command: 'corepack pnpm legacy:start',
           url: `${LEGACY_APP}index.html`,
           reuseExistingServer: !process.env.CI,
           timeout: 30_000,

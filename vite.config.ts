@@ -16,10 +16,12 @@ export default defineConfig({
         // Icon SVGs are a build artifact (downloaded from game-icons.net via
         // `pnpm build:icons`), not committed. The card engine references them
         // as static files under <base>/icons/.
-        { src: 'generator/icons/*', dest: 'icons' },
-        { src: 'generator/fonts/game-icons.woff', dest: 'fonts' },
-        { src: 'generator/fonts/game-icons.ttf', dest: 'fonts' },
-        { src: 'generator/fonts/game-icons.eot', dest: 'fonts' },
+        // stripBase flattens the copies: v4 otherwise preserves the source
+        // directory structure under dest.
+        { src: 'generator/icons/*', dest: 'icons', rename: { stripBase: true } },
+        { src: 'generator/fonts/game-icons.woff', dest: 'fonts', rename: { stripBase: true } },
+        { src: 'generator/fonts/game-icons.ttf', dest: 'fonts', rename: { stripBase: true } },
+        { src: 'generator/fonts/game-icons.eot', dest: 'fonts', rename: { stripBase: true } },
       ],
     }),
   ],

@@ -5,15 +5,18 @@
  * Legacy card styling, imported UNLAYERED on purpose: Tailwind v4 puts all
  * its rules (including preflight) in @layer, and unlayered CSS always wins
  * over layered CSS, so the card output keeps rendering exactly as in the
- * legacy app. Order matters: the Bootstrap-baseline restoration must come
- * before cards.gen.css, mirroring the legacy output.html load order.
+ * legacy app. Import order REPLICATES the legacy output.html stylesheet
+ * order exactly (bootstrap baseline, game-icons, cards, card-size, icons,
+ * custom-icons, style) — cascade ties are resolved by order, and the legacy
+ * style.css relies on loading last (.game-icon line-height override).
  */
 @import "./card-render-base.css";
+@import "./generated/game-icons.gen.css";
 @import "./generated/cards.gen.css";
 @import "./generated/card-size.gen.css";
 @import "./generated/icons.gen.css";
 @import "./generated/custom-icons.gen.css";
-@import "./generated/game-icons.gen.css";
+@import "./generated/style.gen.css";
 
 @custom-variant dark (&:is(.dark *));
 

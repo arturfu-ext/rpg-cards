@@ -136,3 +136,32 @@
   border: 0;
   border-top: 1px solid #eee;
 }
+
+/*
+ * Bootstrap CLASS rules the engine markup references directly: pills emit
+ * class="card-pill label label-default" (directives.ts card_element_pill).
+ * :where keeps specificity at the class level (0,1,0) so cards.gen.css
+ * .card-pill rules win ties by order, as in the legacy cascade.
+ */
+:where(.rpg-cards-render) :where(.label) {
+  display: inline;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+  position: relative;
+  top: -1px;
+}
+
+:where(.rpg-cards-render) :where(.label):empty {
+  display: none;
+}
+
+:where(.rpg-cards-render) :where(.label-default) {
+  background-color: #777;
+}

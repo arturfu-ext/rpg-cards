@@ -19,6 +19,16 @@
 }
 
 @media print {
+  /*
+   * The print container is portaled to <body> (see PrintPreview.tsx);
+   * display:contents removes the one remaining wrapper box so <page>
+   * elements fragment directly against <body> — Chromium otherwise spills
+   * a blank trailing PDF page even when content is exactly N pages tall.
+   */
+  .print-preview-root {
+    display: contents;
+  }
+
   .print-preview-root {
     background: gray;
     margin: 0;
