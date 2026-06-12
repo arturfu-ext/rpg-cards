@@ -26,23 +26,30 @@ export default defineConfig({
     {
       // Captures golden-master fixtures from the legacy engine. Run via
       // `pnpm golden:capture` only when the legacy reference intentionally changes.
+      // Serial: every worker would otherwise spawn/kill the shared :8081 server
+      // (the origin is baked into fixture data-src URLs, so the port is fixed).
       name: 'golden-capture',
       testDir: 'tests/golden',
+      fullyParallel: false,
       use: { ...devices['Desktop Chrome'], baseURL: LEGACY_APP },
     },
   ],
-  webServer: [
-    {
-      command: 'pnpm build && pnpm preview --port 4173 --strictPort',
-      url: NEW_APP,
-      reuseExistingServer: !process.env.CI,
-      timeout: 180_000,
-    },
-    {
-      command: 'pnpm legacy:start',
-      url: `${LEGACY_APP}index.html`,
-      reuseExistingServer: !process.env.CI,
-      timeout: 30_000,
-    },
-  ],
+  // golden-capture manages its own static server (see tests/golden/capture.spec.ts)
+  // and must not depend on the app building mid-migration.
+  webServer: process.argv.some((arg) => arg.includes('golden-capture'))
+    ? []
+    : [
+        {
+          command: 'pnpm build && pnpm preview --port 4173 --strictPort',
+          url: NEW_APP,
+          reuseExistingServer: !process.env.CI,
+          timeout: 180_000,
+        },
+        {
+          command: 'pnpm legacy:start',
+          url: `${LEGACY_APP}index.html`,
+          reuseExistingServer: !process.env.CI,
+          timeout: 30_000,
+        },
+      ],
 });

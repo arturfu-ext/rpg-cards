@@ -1,0 +1,51 @@
+[
+  {
+    "count": 1,
+    "title": "Layout Alpha",
+    "color_front": "Maroon",
+    "contents": ["text | Layout card alpha."],
+    "tags": []
+  },
+  {
+    "count": 2,
+    "title": "Layout Bravo",
+    "color_front": "DarkBlue",
+    "contents": ["text | Layout card bravo."],
+    "tags": []
+  },
+  {
+    "count": 1,
+    "title": "Layout Charlie",
+    "color_front": "DarkGreen",
+    "contents": ["text | Layout card charlie."],
+    "tags": []
+  },
+  {
+    "count": 3,
+    "title": "Layout Delta",
+    "color_front": "Indigo",
+    "contents": ["text | Layout card delta."],
+    "tags": []
+  },
+  {
+    "count": 1,
+    "title": "Layout Echo",
+    "color_front": "Crimson",
+    "contents": ["text | Layout card echo."],
+    "tags": []
+  },
+  {
+    "count": 1,
+    "title": "Layout Foxtrot",
+    "color_front": "Chocolate",
+    "contents": ["text | Layout card foxtrot."],
+    "tags": []
+  },
+  {
+    "count": 2,
+    "title": "Layout Golf",
+    "color_front": "Black",
+    "contents": ["text | Layout card golf."],
+    "tags": []
+  }
+]
