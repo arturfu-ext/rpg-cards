@@ -18,7 +18,13 @@ const destDir = "./public/fonts";
 function downloadFile(url, dest) {
     console.log("  Downloading...");
     return new Promise((resolve, reject) => {
-        request(url)
+        request({ url, headers: { "User-Agent": "rpg-cards-build (github.com/mephitrpg/rpg-cards)" } })
+            .on("error", reject)
+            .on("response", response => {
+                if (response.statusCode !== 200) {
+                    reject(new Error(`Download failed: HTTP ${response.statusCode} for ${url}`));
+                }
+            })
             .pipe(fse.createWriteStream(dest))
             .on("close", resolve)
             .on("error", reject);
@@ -179,4 +185,7 @@ fse.emptyDir(tempDir)
     .then(() => fixCss())
     .then(() => cleanDirectory(tempDir))
     .then(() => console.log("Fonts: done"))
-    .catch(err => console.log("Fonts: error", err));
+    .catch(err => {
+        console.error("Fonts: error", err);
+        process.exitCode = 1;
+    });

@@ -19,7 +19,13 @@ const jsPath = "./resources/generated/icons.js";
 function downloadFile(url, dest) {
     console.log("  Downloading...");
     return new Promise((resolve, reject) => {
-        request(url)
+        request({ url, headers: { "User-Agent": "rpg-cards-build (github.com/mephitrpg/rpg-cards)" } })
+            .on("error", reject)
+            .on("response", response => {
+                if (response.statusCode !== 200) {
+                    reject(new Error(`Download failed: HTTP ${response.statusCode} for ${url}`));
+                }
+            })
             .pipe(fse.createWriteStream(dest))
             .on("close", resolve)
             .on("error", reject);
@@ -105,9 +111,17 @@ function generateCSS(src, dest) {
                 reject(err);
             }
             else {
-                const content = uniqueIconFiles(files)
+                const icons = uniqueIconFiles(files);
+                // A healthy game-icons.net set has 4000+ icons; a tiny count
+                // means the download/unzip silently produced garbage.
+                if (icons.length < 1000) {
+                    reject(new Error(`Only ${icons.length} icons in ${src} — download likely failed`));
+                    return;
+                }
+                const content = icons
                     .map(name => `.icon-${path.basename(name, path.extname(name))} { background-image: url(../icons/${name});}\n`)
                     .join("");
+                fse.ensureDirSync(path.dirname(dest));
                 fse.writeFile(dest, content, err => {
                     if (err) {
                         reject(err);
@@ -135,6 +149,7 @@ function generateJS(src, dest) {
                 const content = "var icon_names = [\n" + uniqueIconFiles(files)
                     .map(name => `    "${path.basename(name, path.extname(name))}"`)
                     .join(",\n") + "\n]";
+                fse.ensureDirSync(path.dirname(dest));
                 fse.writeFile(dest, content, err => {
                     if (err) {
                         reject(err);
@@ -204,7 +219,10 @@ if (process.argv.includes("--regen-only")) {
         .then(() => generateCSS(iconDir, cssPath))
         .then(() => generateJS(iconDir, jsPath))
         .then(() => console.log("Icons: done"))
-        .catch(err => console.log("Icons: error", err));
+        .catch(err => {
+        console.error("Icons: error", err);
+        process.exitCode = 1;
+    });
 } else {
     fse.emptyDir(tempDir)
         .then(() => console.log("Icons: start"))
@@ -220,5 +238,8 @@ if (process.argv.includes("--regen-only")) {
         .then(() => generateJS(iconDir, jsPath))
         .then(() => cleanDirectory(tempDir))
         .then(() => console.log("Icons: done"))
-        .catch(err => console.log("Icons: error", err));
+        .catch(err => {
+        console.error("Icons: error", err);
+        process.exitCode = 1;
+    });
 }
