@@ -19,28 +19,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
-      - name: Replace GA placeholder
-        run: |
-          echo "🔍 Replacing GA placeholder in all files"
-          grep -rl '%GA_MEASUREMENT_ID%' . || echo "🔹 Placeholder not found yet – ensure it's in your source"
-          grep -rl '%GA_MEASUREMENT_ID%' . | xargs sed -i "s/%GA_MEASUREMENT_ID%/${{ secrets.GA_MEASUREMENT_ID }}/g"
+      # Icon SVGs are a build artifact downloaded from game-icons.net; the
+      # icon manifest and generated CSS are then refreshed so the deployed
+      # app always matches the downloaded set.
+      - name: Restore icon assets
+        id: icon-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            generator/icons
+            generator/css/icons.css
+            generator/js/icons.js
+          key: game-icons-${{ hashFiles('resources/tools/update-icons.cjs') }}-${{ github.run_id }}
+          restore-keys: |
+            game-icons-${{ hashFiles('resources/tools/update-icons.cjs') }}-
+
+      - name: Download icon assets (cache miss)
+        if: hashFiles('generator/css/icons.css') == ''
+        run: pnpm build:icons
+
+      - name: Regenerate icon manifest
+        run: pnpm gen:icons
 
       - name: Build
-        run: npm run build
+        run: pnpm build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: generator
+          path: dist
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
